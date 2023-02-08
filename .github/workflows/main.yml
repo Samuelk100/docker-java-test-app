@@ -1,0 +1,54 @@
+From Admin to Everyone 06:19 PM
+Sorry Guys I thought Pablo is here, I am teaching the interview preparation class today
+From CHARLES MURIUKI to Everyone 06:47 PM
+https://github.com/cmuriukin/docker-java-test-app.git
+From Ekale George to Everyone 08:21 PM
+please can you share the file on the chat page Kamraan
+From Kamraan Mohammed to Everyone 08:22 PM
+name: docker-java-test-app
+
+on:
+  push:
+    branches: [main]
+    
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 3
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name: Setup JDK.
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+          
+      - name: Cache Maven Package.
+        uses: actions/cache@v3.2.4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashfiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      - name: Build and test project with Maven.
+        run: mvn -B package --file pom.xml
+        
+        
+  publish-job:
+    runs-on: ubunt-latest
+    needs: [build_and_test]
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: actions/setup-java@v1
+        with:
+From Ekale George to Everyone 08:22 PM
+thanks Kamraan
